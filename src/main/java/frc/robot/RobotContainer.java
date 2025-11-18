@@ -138,7 +138,7 @@ public class RobotContainer {
 
     // Reset gyro to 0° when LeftBumper button is pressed
     controller
-        .LeftBumper()
+        .leftBumper()
         .onTrue(
             Commands.runOnce(
                     () ->
