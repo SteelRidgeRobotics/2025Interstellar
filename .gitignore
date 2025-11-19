@@ -1,4 +1,5 @@
-.gradle
+.gradle/
 bin/
 build/
-
+build/spotless/spotlessJava/src/main/java/frc/robot/BuildConstants.java
+/build
