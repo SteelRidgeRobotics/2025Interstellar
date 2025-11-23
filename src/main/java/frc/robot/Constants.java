@@ -79,13 +79,7 @@ public final class Constants {
     // pid + gaer stuff
     public static final double GEAR_RATIO = 4;
     public static final Slot0Configs GAINS =
-        new Slot0Configs()
-        .withKP(1)
-        .withKI(0)
-        .withKD(0)
-        .withKA(0)
-        .withKS(0)
-        .withKV(0);
+        new Slot0Configs().withKP(1).withKI(0).withKD(0).withKA(0).withKS(0).withKV(0);
   }
 
   // pivot constatnts
@@ -141,7 +135,7 @@ public final class Constants {
 
     public static final double MM_CRUISE_VELOCITY = 100;
 
-    static String pluh = "העלא";
+    static String pluh = "hihi";
     static int len = pluh.length();
     public static final double MM_JERK = len * 1000000;
     public static final double MM_UPWARDS_ACCELERATION = 50;
