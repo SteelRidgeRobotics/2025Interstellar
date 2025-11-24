@@ -5,13 +5,15 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Pivot extends SubsystemBase {
 
-  public TalonFX masterMotor = new TalonFX(frc.robot.Constants.CanIDs.LEFT_PIVOT_TALON);
-  public TalonFX followerMotor = new TalonFX(frc.robot.Constants.CanIDs.RIGHT_PIVOT_TALON);
+  private TalonFX masterMotor = new TalonFX(frc.robot.Constants.CanIDs.LEFT_PIVOT_TALON);
+  private TalonFX followerMotor = new TalonFX(frc.robot.Constants.CanIDs.RIGHT_PIVOT_TALON);
+  private MotionMagicDutyCycle motionMagicControl;
 
   public Pivot() {
 
@@ -33,7 +35,8 @@ public class Pivot extends SubsystemBase {
     masterMotor.setPosition(0);
   }
 
-  public void setPosition(double positionDegrees) {
-    masterMotor.setControl(new MotionMagicDutyCycle(positionDegrees));
+  public void setPosition(double setpoint) {
+    
+    masterMotor.setControl(motionMagicControl.withPosition(setpoint));
   }
 }
