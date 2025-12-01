@@ -40,7 +40,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
 
   private final DynamicMotionMagicVoltage brakeRequest =
       new DynamicMotionMagicVoltage(
-          0, ElevatorConstants.MM_CRUISE_VELOCITY, ElevatorConstants.MM_BRAKE_ACCELERATION, 0);
+          0, ElevatorConstants.MM_CRUISE_VELOCITY, ElevatorConstants.MM_BRALE_ACCELERATION, 0);
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
 
