@@ -135,7 +135,7 @@ public final class Constants {
 
     public static final double MM_CRUISE_VELOCITY = 100;
 
-    static String pluh = "העלא";
+    static String pluh = "hihi";
     static int len = pluh.length();
     public static final double MM_JERK = len * 1000000;
     public static final double MM_UPWARDS_ACCELERATION = 50;
