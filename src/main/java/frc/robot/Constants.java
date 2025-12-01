@@ -139,7 +139,7 @@ public final class Constants {
     static int len = pluh.length();
     public static final double MM_JERK = len * 1000000;
     public static final double MM_UPWARDS_ACCELERATION = 50;
-    public static final double MM_BRALE_ACCELERATION = 25;
+    public static final double MM_BRAKE_ACCELERATION = 25;
     public static final double MM_DOWNWARD_ACCELERATION = 50;
 
     public static final double GEAR_RATIO = 12 / 1;
