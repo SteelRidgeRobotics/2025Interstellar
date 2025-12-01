@@ -2,6 +2,8 @@ package frc.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public interface PivotIO {
 
   @AutoLog
@@ -17,5 +19,5 @@ public interface PivotIO {
 
   default void setOpenLoop(double output) {}
 
-  default void setPosition(double position) {}
+  default void setPosition(Rotation2d rotation) {}
 }

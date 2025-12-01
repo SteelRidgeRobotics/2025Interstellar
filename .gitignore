@@ -188,3 +188,9 @@ compile_commands.json
 /.vscode/
 /.wpilib/
 /simgui-ds.json
+
+# Other
+.gradle/*
+build/*
+*.bin
+*.gradle
