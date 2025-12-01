@@ -1,11 +1,12 @@
 package frc.robot.subsystems.pivot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public interface PivotIO {
     @AutoLog
-    public static class PivotIO {
+    public static class PivotIOInputs {
         public boolean pivotConnected = false;
         public double positionRads = 0.0;
         public double velocityRads = 0.0;
@@ -15,7 +16,7 @@ public interface PivotIO {
 
     default void updateInputs(PivotIOInputs inputs) {}
 
-    default void setPivotOpenLoop(double output) {}
+    default void setOpenLoop(double output) {}
 
-    default void setPivotPosition(double position) {}
+    default void setPosition(Rotation2d rotation) {}
 }
