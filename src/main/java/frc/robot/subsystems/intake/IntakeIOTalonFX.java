@@ -91,15 +91,22 @@ public class IntakeIOTalonFX implements IntakeIO {
     
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        var intakeStatus = 
+        var topIntakeStatus = 
             BaseStatusSignal.refreshAll(
-            topIntakeAppliedVoltage, bottomIntakeAppliedVoltage,
-            topIntakeCurrentAmps, bottomIntakeCurrentAmps,
-            topIntakeVelocity, bottomIntakeVelocity
+            topIntakeAppliedVoltage, 
+            topIntakeCurrentAmps,
+            topIntakeVelocity 
         );
 
-            inputs.topIntakeConnected = topIntakeConnectedDebounce.calculate(intakeStatus.isOK());
-            inputs.bottomIntakeConnected = bottomIntakeConnectedDebounce.calculate(intakeStatus.isOK());
+        var bottomIntakeStatus = 
+            BaseStatusSignal.refreshAll(
+                bottomIntakeAppliedVoltage,
+                bottomIntakeCurrentAmps,
+                bottomIntakeVelocity
+            );
+
+            inputs.topIntakeConnected = topIntakeConnectedDebounce.calculate(topIntakeStatus.isOK());
+            inputs.bottomIntakeConnected = bottomIntakeConnectedDebounce.calculate(bottomIntakeStatus.isOK());
             
             inputs.topIntakeVelocityRadsPerSec = Units.rotationsToRadians(topIntakeVelocity.getValueAsDouble());
             inputs.bottomIntakeVelocityRadsPerSec = Units.rotationsToRadians(bottomIntakeVelocity.getValueAsDouble());
@@ -111,13 +118,15 @@ public class IntakeIOTalonFX implements IntakeIO {
             inputs.bottomIntakeCurrentAmps = bottomIntakeCurrentAmps.getValueAsDouble();
 
             inputs.sensorSensed = coralDetected.getValue();
-
-        
-
-            
-
     }
     
-    
+    @Override
+  public void setIntakeOpenLoop(double output, boolean ignoreLimits) {
+    topIntakeTalon.setControl(
+        dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
+        
+    bottomIntakeTalon.setControl(
+        dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
+      }
+  }
 
-}
