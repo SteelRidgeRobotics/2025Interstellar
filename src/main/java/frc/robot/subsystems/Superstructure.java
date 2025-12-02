@@ -24,11 +24,11 @@ public class Superstructure extends SubsystemBase {
   }
 
   private States currentState = States.DEFAULT;
-  
-    public Superstructure(Pivot pivot, Elevator elevator, IntakeSubsystem intake) {
-      this.pivot = pivot;
-      this.elevator = elevator;
-      this.intake = intake;
+
+  public Superstructure(Pivot pivot, Elevator elevator, IntakeSubsystem intake) {
+    this.pivot = pivot;
+    this.elevator = elevator;
+    this.intake = intake;
   }
 
   public void setGoal(States state) {
@@ -48,10 +48,6 @@ public class Superstructure extends SubsystemBase {
         pivot.setState(Pivot.State.INTAKE);
         elevator.setState(Elevator.State.DEFAULT);
         intake.setState(IntakeSubsystem.State.CORAL_INTAKE);
-      
-        
-
-        
     }
   }
 }

@@ -46,7 +46,9 @@ public class RobotContainer {
       new Superstructure(
           new frc.robot.subsystems.pivot.Pivot(new frc.robot.subsystems.pivot.PivotIOTalonFX()),
           new frc.robot.subsystems.elevator.Elevator(
-              new frc.robot.subsystems.elevator.ElevatorIOTalonFX()));
+              new frc.robot.subsystems.elevator.ElevatorIOTalonFX()),
+          new frc.robot.subsystems.intake.IntakeSubsystem(
+              new frc.robot.subsystems.intake.IntakeIOTalonFX()));
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -160,6 +162,10 @@ public class RobotContainer {
     controller
         .b()
         .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.DEFAULT)));
+
+    controller
+        .a()
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.L1_CORAL)));
   }
   ;
 
