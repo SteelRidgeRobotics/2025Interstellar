@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
@@ -22,10 +23,10 @@ public class Pivot extends SubsystemBase {
     SCORING(PivotConstants.SCORING_ANGLE),
     INTAKE(PivotConstants.GROUND_INTAKE_ANGLE);
 
-    private final double angle;
+    private final Rotation2d rotation;
 
-    State(Double angle) {
-      this.angle = angle;
+    State(double rotations) {
+      this.rotation = Rotation2d.fromRotations(rotations);
     }
   }
 
@@ -65,7 +66,7 @@ public class Pivot extends SubsystemBase {
 
   public void setState(State state) {
     currentState = state;
-    io.setPosition(currentState.angle);
+    io.setPosition(currentState.rotation);
   }
 
   @AutoLogOutput(key = "Pivot/State")
