@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -10,7 +12,7 @@ public class Superstructure extends SubsystemBase {
   private final Elevator elevator;
   private final IntakeSubsystem intake;
 
-  public enum States {
+  public enum Goals {
     DEFAULT,
     // L3_CORAL,
     L2_CORAL,
@@ -22,16 +24,18 @@ public class Superstructure extends SubsystemBase {
     // CLIMBING,
     // FLOOR,
   }
-
-  private States currentState = States.DEFAULT;
+  
+  @AutoLogOutput(key = "Superstructure/Goal")
+  private Goals currentState = Goals.DEFAULT;
 
   public Superstructure(Pivot pivot, Elevator elevator, IntakeSubsystem intake) {
+    setName("Superstructure");
     this.pivot = pivot;
     this.elevator = elevator;
     this.intake = intake;
   }
 
-  public void setGoal(States state) {
+  public void setGoal(Goals state) {
     this.currentState = state;
     switch (currentState) {
       case DEFAULT:

@@ -157,15 +157,15 @@ public class RobotContainer {
 
     controller
         .y()
-        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.INTAKE)));
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.Goals.INTAKE)));
 
     controller
         .b()
-        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.DEFAULT)));
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.Goals.DEFAULT)));
 
     controller
         .a()
-        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.L1_CORAL)));
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.Goals.L1_CORAL)));
   }
   ;
 
