@@ -37,7 +37,7 @@ public class Superstructure extends SubsystemBase {
       case DEFAULT:
         pivot.setState(Pivot.State.DEFAULT);
         elevator.setState(Elevator.State.DEFAULT);
-        intake.setState(IntakeSubsystem.State.ALGAE_HOLD);
+        intake.setState(IntakeSubsystem.State.HOLD);
       case L2_CORAL:
         pivot.setState(Pivot.State.SCORING);
         elevator.setState(Elevator.State.L2);
