@@ -31,7 +31,6 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
     }
-  }
 
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
@@ -80,4 +79,4 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean hasCoral() {
         return inputs.sensorSensed;
   }
-
+}
