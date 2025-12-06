@@ -23,7 +23,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import java.util.Optional;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
@@ -112,19 +111,16 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void setPosition(Optional<Double> position) {
-    if (position.isEmpty()) {
-      brakeRequest.Position = mainTalon.getPosition().getValueAsDouble();
-      mainTalon.setControl(brakeRequest);
-    } else {
-      if (mainTalon.getPosition().getValue().in(Rotations) < position.get()) {
+  public void setPosition(double position) {
+
+      if (mainTalon.getPosition().getValue().in(Rotations) < position) {
         positionRequest.Acceleration = ElevatorConstants.MM_UPWARDS_ACCELERATION;
       } else {
         positionRequest.Acceleration = ElevatorConstants.MM_DOWNWARD_ACCELERATION;
       }
 
-      positionRequest.Position = position.get();
+      positionRequest.Position = position;
       mainTalon.setControl(positionRequest);
-    }
   }
+
 }

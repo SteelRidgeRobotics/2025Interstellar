@@ -1,7 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -11,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.ElevatorConstants;
 
-public class ElevatorIOSim implements ElevatorIO{
+public class ElevatorIOSim implements ElevatorIO {
     private static final DCMotor ELEVATOR_GEARBOX = DCMotor.getKrakenX60Foc(2);
     private final DCMotorSim elevatorSim;
 
@@ -28,7 +26,7 @@ public class ElevatorIOSim implements ElevatorIO{
             )
         );
 
-    private double elevatorAppiedVolts;
+    private double elevatorAppliedVolts;
     
     public ElevatorIOSim() {
         elevatorSim =
@@ -41,39 +39,35 @@ public class ElevatorIOSim implements ElevatorIO{
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
         if (closedLoop) {
-            elevatorAppiedVolts = elevatorController.calculate(elevatorSim.getAngularPositionRad());
+            elevatorAppliedVolts = elevatorController.calculate(elevatorSim.getAngularPositionRad());
         } else {
             elevatorController.reset(
                 elevatorSim.getAngularPositionRad(), elevatorSim.getAngularVelocityRadPerSec()
             );
         }
 
-        elevatorSim.setInputVoltage(MathUtil.clamp(elevatorAppiedVolts, -12, 12));
+        elevatorSim.setInputVoltage(MathUtil.clamp(elevatorAppliedVolts, -12, 12));
         elevatorSim.update(0.02);
 
         inputs.elevatorConnected = true;
         inputs.positionRads = elevatorSim.getAngularPositionRad();
         inputs.velocityRads = elevatorSim.getAngularVelocityRadPerSec();
-        inputs.appliedVolts = elevatorAppiedVolts;
+        inputs.appliedVolts = elevatorAppliedVolts;
         inputs.statorCurrent = Math.abs(elevatorSim.getCurrentDrawAmps());
     }
 
     @Override
     public void setOpenLoop(double output) {
         closedLoop = false;
-        elevatorAppiedVolts = output;
+        elevatorAppliedVolts = output;
     }
 
     @Override
-    public void setPosition(Optional<Double> position) {
-        if (position.isEmpty()) {
-            setOpenLoop(0);
-            return;
-        }
+    public void setPosition(double position) {
 
         closedLoop = true;
 
-        double pos = Units.rotationsToRadians(position.get());
+        double pos = Units.rotationsToRadians(position);
         elevatorController.setGoal(pos);
 
         if (pos > elevatorSim.getAngularPositionRad()) {

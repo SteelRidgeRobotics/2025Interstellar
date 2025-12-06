@@ -4,34 +4,25 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
 // import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElevatorConstants;
-import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
 
   public enum State {
-    IDLE(null),
     DEFAULT(ElevatorConstants.DEFAULT_POSITION),
     L1(ElevatorConstants.L1_SCORE_POSITION),
-    L2(ElevatorConstants.L2_SCORE_POSITION),
-    L3(ElevatorConstants.L3_SCORE_POSITION),
-    L2_ALGAE(ElevatorConstants.L2_ALGAE_POSITION),
-    L3_ALGAE(ElevatorConstants.L3_ALGAE_POSITION),
-    PROCESSOR(ElevatorConstants.PROCESSOR_SCORE_POSITION),
-    MAX(ElevatorConstants.ELEVATOR_MAX);
+    L2(ElevatorConstants.L2_SCORE_POSITION);
 
-    public final Double position;
+    public final double position;
 
-    State(Double position) {
+    State(double position) {
       this.position = position;
     }
   }
@@ -71,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
   public void setState(State state) {
     currentState = state;
-    io.setPosition(Optional.ofNullable(currentState.position));
+    io.setPosition(currentState.position);
   }
 
   @AutoLogOutput(key = "Elevator/State")
@@ -81,7 +72,6 @@ public class Elevator extends SubsystemBase {
 
   @AutoLogOutput(key = "Elevator/At Setpoint")
   public boolean isAtSetpoint() {
-    if (getState() == State.IDLE) return false;
     atSetpoint =
         Math.abs(Units.radiansToRotations(inputs.positionRads) - currentState.position)
             <= ElevatorConstants.SETPOINT_TOLERANCE;
@@ -106,11 +96,4 @@ public class Elevator extends SubsystemBase {
         * (2 * Math.PI * 0.508);
   }
 
-  public Pose3d[] getComponentPoses() {
-    double position = Units.radiansToRotations(inputs.positionRads);
-    return new Pose3d[] {
-      new Pose3d(0, 0, position * (0.6985 / 6.096924), new Rotation3d()),
-      new Pose3d(0, 0, position * 2 * (0.6985 / 6.096924), new Rotation3d())
-    };
-  }
 }
