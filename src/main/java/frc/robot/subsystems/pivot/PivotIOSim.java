@@ -22,7 +22,7 @@ public class PivotIOSim implements PivotIO {
         this.pivotSim = 
             new DCMotorSim(
                 LinearSystemID.createDCMotorSystem(
-                    GEARBOX, 0.0807378172, Constants.PivotConstants.GEAR_RATIO),
+                    GEARBOX, 0.624, Constants.PivotConstants.GEAR_RATIO),
                 GEARBOX);
 
         this.controller = 
