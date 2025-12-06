@@ -20,112 +20,135 @@ import frc.robot.Constants;
 
 
 public class IntakeIOTalonFX implements IntakeIO {
-    
-    // make motors
-    private final TalonFX topIntakeTalon;
-    private final TalonFX bottomIntakeTalon;
-    private final CANrange intakeCANrange;
 
-    // make request to edit later
-    private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
+  // make motors
+  private final TalonFX coral2IntakeTalon;
+  private final TalonFX coralIntakeTalon;
+  private final TalonFX algaeIntakeTalon;
+  private final CANrange intakeCANrange;
 
-    // input logging
-    private final StatusSignal<AngularVelocity> topIntakeVelocity;
-    private final StatusSignal<AngularVelocity> bottomIntakeVelocity;
-    private final StatusSignal<Voltage> topIntakeAppliedVoltage;
-    private final StatusSignal<Voltage> bottomIntakeAppliedVoltage;
-    private final StatusSignal<Current> topIntakeCurrentAmps;
-    private final StatusSignal<Current> bottomIntakeCurrentAmps;
-    private final StatusSignal<Boolean> coralDetected;
+  // make request to edit later
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
-    public IntakeIOTalonFX() {
-        // set motor ids
-        topIntakeTalon = new TalonFX(Constants.CanIDs.INTAKE_TALON);
-        bottomIntakeTalon = new TalonFX(Constants.CanIDs.INTAKE_TALON2);
-        intakeCANrange = new CANrange(Constants.CanIDs.INTAKE_CANRANGE);
+  // input logging
+  private final StatusSignal<AngularVelocity> coral2IntakeVelocity;
+  private final StatusSignal<AngularVelocity> coralIntakeVelocity;
+  private final StatusSignal<AngularVelocity> algaeIntakeVelocity;
 
-        var intakeConfig = new TalonFXConfiguration();
-        intakeConfig.Slot0.kP = Constants.IntakeConstants.GAINS.kP;
-        intakeConfig.Slot0.kI = Constants.IntakeConstants.GAINS.kI;
-        intakeConfig.Slot0.kD = Constants.IntakeConstants.GAINS.kD;
-        intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        intakeConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.GEAR_RATIO;
-        intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        intakeConfig.CurrentLimits.SupplyCurrentLimit = Constants.IntakeConstants.SUPPLY_CURRENT;
-        tryUntilOk(5, () -> topIntakeTalon.getConfigurator().apply(intakeConfig));
-        tryUntilOk(5, () -> bottomIntakeTalon.getConfigurator().apply(intakeConfig));
+  private final StatusSignal<Voltage> coral2IntakeAppliedVoltage;
+  private final StatusSignal<Voltage> coralIntakeAppliedVoltage;
+  private final StatusSignal<Voltage> algaeIntakeAppliedVoltage;
 
-        var CANrangeConfig = new CANrangeConfiguration();
-        CANrangeConfig.ProximityParams.ProximityThreshold = 0.1;
-        tryUntilOk(5, () -> intakeCANrange.getConfigurator().apply(CANrangeConfig));
+  private final StatusSignal<Current> coral2IntakeCurrentAmps;
+  private final StatusSignal<Current> coralIntakeCurrentAmps;
+  private final StatusSignal<Current> algaeIntakeCurrentAmps;
 
-        // status signal creation
-        topIntakeVelocity = topIntakeTalon.getVelocity();
-        bottomIntakeVelocity = bottomIntakeTalon.getVelocity();
+  private final StatusSignal<Boolean> coralDetected;
 
-        topIntakeAppliedVoltage = topIntakeTalon.getMotorVoltage();
-        bottomIntakeAppliedVoltage = bottomIntakeTalon.getMotorVoltage();
-      
-        topIntakeCurrentAmps = topIntakeTalon.getStatorCurrent();
-        bottomIntakeCurrentAmps = bottomIntakeTalon.getStatorCurrent();
+  public IntakeIOTalonFX() {
+    // set motor ids
+    coralIntakeTalon = new TalonFX(Constants.CanIDs.INTAKE_TALON);
+    coral2IntakeTalon = new TalonFX(Constants.CanIDs.INTAKE_TALON2);
+    algaeIntakeTalon = new TalonFX(Constants.CanIDs.ALGAE_TALON);
+    intakeCANrange = new CANrange(Constants.CanIDs.INTAKE_CANRANGE);
 
-        coralDetected = intakeCANrange.getIsDetected();
+    var intakeConfig = new TalonFXConfiguration();
+    intakeConfig.Slot0.kP = Constants.IntakeConstants.GAINS.kP;
+    intakeConfig.Slot0.kI = Constants.IntakeConstants.GAINS.kI;
+    intakeConfig.Slot0.kD = Constants.IntakeConstants.GAINS.kD;
+    intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    intakeConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.GEAR_RATIO;
+    intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = Constants.IntakeConstants.SUPPLY_CURRENT;
+    tryUntilOk(5, () -> coral2IntakeTalon.getConfigurator().apply(intakeConfig));
+    tryUntilOk(5, () -> coralIntakeTalon.getConfigurator().apply(intakeConfig));
+    tryUntilOk(5, () -> algaeIntakeTalon.getConfigurator().apply(intakeConfig));
 
-        // determine update frequency
-        BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, topIntakeVelocity, topIntakeAppliedVoltage, topIntakeCurrentAmps, coralDetected);
-        topIntakeTalon.optimizeBusUtilization();
+    var CANrangeConfig = new CANrangeConfiguration();
+    CANrangeConfig.ProximityParams.ProximityThreshold = 0.1;
+    tryUntilOk(5, () -> intakeCANrange.getConfigurator().apply(CANrangeConfig));
 
-        BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, bottomIntakeVelocity, bottomIntakeAppliedVoltage, bottomIntakeCurrentAmps, coralDetected);
-        bottomIntakeTalon.optimizeBusUtilization();
-    }
-        //connection thing (may be a hard ctrlc ctrlv)
-        final Debouncer topIntakeConnectedDebounce =
+    // status signal creation
+    coral2IntakeVelocity = coral2IntakeTalon.getVelocity();
+    coralIntakeVelocity = coralIntakeTalon.getVelocity();
+    algaeIntakeVelocity = algaeIntakeTalon.getVelocity();
+
+    coral2IntakeAppliedVoltage = coral2IntakeTalon.getMotorVoltage();
+    coralIntakeAppliedVoltage = coralIntakeTalon.getMotorVoltage();
+    algaeIntakeAppliedVoltage = coralIntakeTalon.getMotorVoltage();
+
+    coral2IntakeCurrentAmps = coral2IntakeTalon.getStatorCurrent();
+    coralIntakeCurrentAmps = coralIntakeTalon.getStatorCurrent();
+    algaeIntakeCurrentAmps = coralIntakeTalon.getStatorCurrent();
+
+    coralDetected = intakeCANrange.getIsDetected();
+
+    // determine update frequency
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0, coral2IntakeVelocity, coral2IntakeAppliedVoltage, coral2IntakeCurrentAmps, coralDetected);
+    coral2IntakeTalon.optimizeBusUtilization();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        coralIntakeVelocity,
+        coralIntakeAppliedVoltage,
+        coralIntakeCurrentAmps,
+        coralDetected);
+    coralIntakeTalon.optimizeBusUtilization();
+  }
+  // connection thing (may be a hard ctrlc ctrlv)
+  final Debouncer coral2IntakeConnectedDebounce = 
         new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
-        final Debouncer bottomIntakeConnectedDebounce =
-        new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  final Debouncer coralIntakeConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+
+  final Debouncer algaeIntakeConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+
+  @Override
+  public void updateInputs(IntakeIOInputs inputs) {
+    var coral2IntakeStatus =
+        BaseStatusSignal.refreshAll(
+            coral2IntakeAppliedVoltage, coral2IntakeCurrentAmps, coral2IntakeVelocity);
+
+    var coralIntakeStatus =
+        BaseStatusSignal.refreshAll(
+            coralIntakeAppliedVoltage, coralIntakeCurrentAmps, coralIntakeVelocity);
+
+    var algaeIntakeStatus =
+        BaseStatusSignal.refreshAll(
+            algaeIntakeAppliedVoltage, algaeIntakeCurrentAmps, algaeIntakeVelocity);
 
 
-    
-    @Override
-    public void updateInputs(IntakeIOInputs inputs) {
-        var topIntakeStatus = 
-            BaseStatusSignal.refreshAll(
-            topIntakeAppliedVoltage, 
-            topIntakeCurrentAmps,
-            topIntakeVelocity 
-        );
+    inputs.coral2IntakeConnected = 
+        coral2IntakeConnectedDebounce.calculate(coral2IntakeStatus.isOK());
+    inputs.coralIntakeConnected =
+        coralIntakeConnectedDebounce.calculate(coralIntakeStatus.isOK());
+    inputs.coral2IntakeConnected = 
+        algaeIntakeConnectedDebounce.calculate(algaeIntakeStatus.isOK());
 
-        var bottomIntakeStatus = 
-            BaseStatusSignal.refreshAll(
-                bottomIntakeAppliedVoltage,
-                bottomIntakeCurrentAmps,
-                bottomIntakeVelocity
-            );
+    inputs.coral2IntakeVelocityRadsPerSec =
+        Units.rotationsToRadians(coral2IntakeVelocity.getValueAsDouble());
+    inputs.coralIntakeVelocityRadsPerSec =
+        Units.rotationsToRadians(coralIntakeVelocity.getValueAsDouble());
 
-            inputs.topIntakeConnected = topIntakeConnectedDebounce.calculate(topIntakeStatus.isOK());
-            inputs.bottomIntakeConnected = bottomIntakeConnectedDebounce.calculate(bottomIntakeStatus.isOK());
-            
-            inputs.topIntakeVelocityRadsPerSec = Units.rotationsToRadians(topIntakeVelocity.getValueAsDouble());
-            inputs.bottomIntakeVelocityRadsPerSec = Units.rotationsToRadians(bottomIntakeVelocity.getValueAsDouble());
-            
-            inputs.topIntakeAppliedVoltage = topIntakeAppliedVoltage.getValueAsDouble();
-            inputs.bottomIntakeAppliedVoltage = bottomIntakeAppliedVoltage.getValueAsDouble();
+    inputs.coral2IntakeAppliedVoltage = coral2IntakeAppliedVoltage.getValueAsDouble();
+    inputs.coralIntakeAppliedVoltage = coralIntakeAppliedVoltage.getValueAsDouble();
 
-            inputs.topIntakeCurrentAmps = topIntakeCurrentAmps.getValueAsDouble();
-            inputs.bottomIntakeCurrentAmps = bottomIntakeCurrentAmps.getValueAsDouble();
+    inputs.coral2IntakeCurrentAmps = coral2IntakeCurrentAmps.getValueAsDouble();
+    inputs.coralIntakeCurrentAmps = coralIntakeCurrentAmps.getValueAsDouble();
 
-            inputs.sensorSensed = coralDetected.getValue();
-    }
-    
-    @Override
+    inputs.sensorSensed = coralDetected.getValue();
+  }
+
+  @Override
   public void setIntakeOpenLoop(double output, boolean ignoreLimits) {
-    topIntakeTalon.setControl(
+    coral2IntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
-        
-    bottomIntakeTalon.setControl(
+    coralIntakeTalon.setControl(
+        dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
+    algaeIntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
       }
   }

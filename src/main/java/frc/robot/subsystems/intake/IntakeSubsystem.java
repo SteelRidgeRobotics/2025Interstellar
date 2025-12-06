@@ -35,13 +35,14 @@ public class IntakeSubsystem extends SubsystemBase {
         }
 
     }
-    
-    
-    private final IntakeIO io;
-    private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-    
-    private final Alert topintakeDisconnectAlert;
-    private final Alert bottomIntakeDisconnecAlert;
+  }
+
+  private final IntakeIO io;
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+
+  private final Alert coralIntakeDisconnectAlert;
+  private final Alert coral2IntakeDisconnectAlert;
+  private final Alert algaeIntakeDisconnectAlert;
 
     private State currentState = State.HOLD;
 
@@ -49,18 +50,20 @@ public class IntakeSubsystem extends SubsystemBase {
         this.io = io;
         setName("Intake");
 
-        topintakeDisconnectAlert = new Alert("Top intake motor disconnected",AlertType.kError);
-        bottomIntakeDisconnecAlert = new Alert("Bottom intake motor disconnected", AlertType.kError);
-    }
-    
-    @Override
-    public void periodic() {
-        io.updateInputs(inputs);
-        Logger.processInputs("Intake", inputs);
+    coralIntakeDisconnectAlert = new Alert("Coral intake motor disconnected", AlertType.kError);
+    coral2IntakeDisconnectAlert = new Alert("Coral2 intake motor disconnected", AlertType.kError);
+    algaeIntakeDisconnectAlert = new Alert("Coral2 intake motor disconnected", AlertType.kError);
+  }
 
-        topintakeDisconnectAlert.set(!inputs.topIntakeConnected);
-        bottomIntakeDisconnecAlert.set(!inputs.bottomIntakeConnected);
-    }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    Logger.processInputs("Intake", inputs);
+
+    coralIntakeDisconnectAlert.set(!inputs.coralIntakeConnected);
+    coral2IntakeDisconnectAlert.set(!inputs.coral2IntakeConnected);
+    algaeIntakeDisconnectAlert.set(!inputs.coral2IntakeConnected);
+  }
 
     @AutoLogOutput(key = "Intake/State")
     public State getState() {
