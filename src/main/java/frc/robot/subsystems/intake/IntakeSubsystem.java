@@ -19,15 +19,11 @@ public class IntakeSubsystem extends SubsystemBase {
         ALGAE_INTAKE(IntakeConstants.ALGAE_INTAKE_SPEED, false),
         ALGAE_OUTPUT(IntakeConstants.ALGAE_OUTPUT_SPEED, true),
         L1_OUTPUT(IntakeConstants.L1_OUTPUT_SPEED, true);
-        
-
-        
-
 
         public final double output;
         public final boolean ignoreLimits;
 
-        State(double output, Boolean ignoreLimits){
+        State(double output, boolean ignoreLimits){
             this.output = output;
             this.ignoreLimits = ignoreLimits;
 
@@ -46,13 +42,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private State currentState = State.HOLD;
 
-    public IntakeSubsystem(IntakeIO io){
+    public IntakeSubsystem(IntakeIO io) {
         this.io = io;
         setName("Intake");
 
     coralIntakeDisconnectAlert = new Alert("Coral intake motor disconnected", AlertType.kError);
     coral2IntakeDisconnectAlert = new Alert("Coral2 intake motor disconnected", AlertType.kError);
-    algaeIntakeDisconnectAlert = new Alert("Coral2 intake motor disconnected", AlertType.kError);
+    algaeIntakeDisconnectAlert = new Alert("algae intake motor disconnected", AlertType.kError);
   }
 
   @Override
@@ -62,7 +58,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     coralIntakeDisconnectAlert.set(!inputs.coralIntakeConnected);
     coral2IntakeDisconnectAlert.set(!inputs.coral2IntakeConnected);
-    algaeIntakeDisconnectAlert.set(!inputs.coral2IntakeConnected);
+    algaeIntakeDisconnectAlert.set(!inputs.algaeIntakeConnected);
   }
 
     @AutoLogOutput(key = "Intake/State")
@@ -84,4 +80,4 @@ public class IntakeSubsystem extends SubsystemBase {
     public boolean hasCoral() {
         return inputs.sensorSensed;
   }
-}
+
