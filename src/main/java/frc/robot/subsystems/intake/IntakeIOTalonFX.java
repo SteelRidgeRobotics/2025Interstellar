@@ -100,7 +100,7 @@ public class IntakeIOTalonFX implements IntakeIO {
 
         coralDetected
         );
-        ParentDevice.optimizeBusUtilizationForAll();
+        ParentDevice.optimizeBusUtilizationForAll(coralIntakeTalon, coral2IntakeTalon, algaeIntakeTalon);
   }
 
   // connection thing (may be a hard ctrlc ctrlv)
