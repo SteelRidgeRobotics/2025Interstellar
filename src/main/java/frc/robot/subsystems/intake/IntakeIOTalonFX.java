@@ -85,17 +85,24 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     // determine update frequency
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, coral2IntakeVelocity, coral2IntakeAppliedVoltage, coral2IntakeCurrentAmps, coralDetected);
-    coral2IntakeTalon.optimizeBusUtilization();
-
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
+        50.0, 
+        coral2IntakeVelocity, 
+        coral2IntakeAppliedVoltage, 
+        coral2IntakeCurrentAmps, 
+        
         coralIntakeVelocity,
         coralIntakeAppliedVoltage,
         coralIntakeCurrentAmps,
-        coralDetected);
-    coralIntakeTalon.optimizeBusUtilization();
+
+        algaeIntakeVelocity,
+        algaeIntakeAppliedVoltage,
+        algaeIntakeCurrentAmps,
+
+        coralDetected
+        );
+        ParentDevice.optimizeBusUtilizationForAll();
   }
+
   // connection thing (may be a hard ctrlc ctrlv)
   final Debouncer coral2IntakeConnectedDebounce = 
         new Debouncer(0.5, Debouncer.DebounceType.kFalling);

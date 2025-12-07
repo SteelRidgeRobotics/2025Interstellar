@@ -47,7 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     coralIntakeDisconnectAlert = new Alert("Coral intake motor disconnected", AlertType.kError);
     coral2IntakeDisconnectAlert = new Alert("Coral2 intake motor disconnected", AlertType.kError);
-    algaeIntakeDisconnectAlert = new Alert("algae intake motor disconnected", AlertType.kError);
+    algaeIntakeDisconnectAlert = new Alert("Algae intake motor disconnected", AlertType.kError);
   }
 
   @Override

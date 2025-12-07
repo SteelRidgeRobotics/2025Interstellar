@@ -8,27 +8,30 @@ import frc.robot.Constants;
 
 public class IntakeIOSim implements IntakeIO {
     // make sim motors (coral intake bundles the 2 motors together because they work in tandem)
-    private static final DCMotor coralIntakeSIM = DCMotor.getKrakenX60(2);
-    private static final DCMotor algaeIntakeSIM = DCMotor.getKrakenX60(1);
+    private static final DCMotor coralIntakeSim = DCMotor.getKrakenX60(2);
+    private static final DCMotor algaeIntakeSim = DCMotor.getKrakenX60(1);
 
     private final DCMotorSim intakeSim = 
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                coralIntakeSIM, 0.01, Constants.IntakeConstants.GEAR_RATIO),
-            coralIntakeSIM);
+                coralIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
+            coralIntakeSim);
 
     private final DCMotorSim algaeSim = 
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                algaeIntakeSIM, 0.01, Constants.IntakeConstants.GEAR_RATIO),
-            algaeIntakeSIM);
+                algaeIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
+            algaeIntakeSim);
 
     private double intakeAppliedVolts = 0.0;
 
 @Override
 public void updateInputs(IntakeIOInputs inputs) {
-    intakeSim.setInputVoltage(MathUtil.clamp(intakeAppliedVolts,-12,12));
+    intakeSim.setInputVoltage(MathUtil.clamp(intakeAppliedVolts, -12, 12));
     intakeSim.update(0.02);
+
+    algaeSim.setInputVoltage(MathUtil.clamp(intakeAppliedVolts, -12, 12));
+    algaeSim.update(0.02);
 
     inputs.algaeIntakeConnected = true;
     inputs.algaeIntakeVelocityRadsPerSec = algaeSim.getAngularVelocityRadPerSec();
