@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants.PivotConstants;
 
 public class PivotIOSim implements PivotIO {
-    public static final DCMotor GEARBOX = DCMotor.getKrakenX60Fox(1);
+    public static final DCMotor GEARBOX = DCMotor.getKrakenX60Foc(1);
     private final DCMotorSim pivotSim;
 
     private boolean closedLoop = false;
@@ -41,10 +41,10 @@ public class PivotIOSim implements PivotIO {
         if (closedLoop) {
             appliedVolts = controller.calculate(pivotSim.getAngularPositionRad());            
         } else {
-            controller.reset(pivotSIM.getAngularPositionRad(), pivotSim.getAngularVelocityRadPerSec());
+            controller.reset(pivotSim.getAngularPositionRad(), pivotSim.getAngularVelocityRadPerSec());
         }
 
-        pivotSim.setInputVoltage(MathUtil.clamp(applideVolts, -12.0, 12.0));
+        pivotSim.setInputVoltage(MathUtil.clamp(appliedVolts, -12.0, 12.0));
         pivotSim.update(0.02);
 
         inputs.pivotConnected = true;
