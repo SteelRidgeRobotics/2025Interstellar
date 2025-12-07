@@ -8,7 +8,6 @@ public class Superstructure extends SubsystemBase {
   private final Pivot pivot;
   private final Elevator elevator;
 
-
   public enum States {
     DEFAULT,
     // L3_CORAL,

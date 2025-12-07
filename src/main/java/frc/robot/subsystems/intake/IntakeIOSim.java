@@ -7,26 +7,26 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.Constants;
 
 public class IntakeIOSim implements IntakeIO {
-    // make sim motors (coral intake bundles the 2 motors together because they work in tandem)
-    private static final DCMotor coralIntakeSim = DCMotor.getKrakenX60(2);
-    private static final DCMotor algaeIntakeSim = DCMotor.getKrakenX60(1);
+  // make sim motors (coral intake bundles the 2 motors together because they work in tandem)
+  private static final DCMotor coralIntakeSim = DCMotor.getKrakenX60(2);
+  private static final DCMotor algaeIntakeSim = DCMotor.getKrakenX60(1);
 
-    private final DCMotorSim intakeSim = 
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                coralIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
-            coralIntakeSim);
+  private final DCMotorSim intakeSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(
+              coralIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
+          coralIntakeSim);
 
-    private final DCMotorSim algaeSim = 
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                algaeIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
-            algaeIntakeSim);
+  private final DCMotorSim algaeSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(
+              algaeIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
+          algaeIntakeSim);
 
-    private double intakeAppliedVolts = 0.0;
+  private double intakeAppliedVolts = 0.0;
 
-@Override
-public void updateInputs(IntakeIOInputs inputs) {
+  @Override
+  public void updateInputs(IntakeIOInputs inputs) {
     intakeSim.setInputVoltage(MathUtil.clamp(intakeAppliedVolts, -12, 12));
     intakeSim.update(0.02);
 
@@ -47,10 +47,9 @@ public void updateInputs(IntakeIOInputs inputs) {
     inputs.coral2IntakeVelocityRadsPerSec = intakeSim.getAngularVelocityRadPerSec();
     inputs.coral2IntakeAppliedVoltage = intakeAppliedVolts;
     inputs.coral2IntakeCurrentAmps = Math.abs(intakeSim.getCurrentDrawAmps());
-    
-} 
+  }
 
-public void setIntakeOpenLoop(double output) {
+  public void setIntakeOpenLoop(double output) {
     intakeAppliedVolts = output;
-    }
+  }
 }

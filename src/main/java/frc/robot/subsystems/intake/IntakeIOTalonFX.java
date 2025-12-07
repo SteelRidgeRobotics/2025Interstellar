@@ -8,16 +8,15 @@ import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.CANrange;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
-
 
 public class IntakeIOTalonFX implements IntakeIO {
 
@@ -85,27 +84,24 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     // determine update frequency
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, 
-        coral2IntakeVelocity, 
-        coral2IntakeAppliedVoltage, 
-        coral2IntakeCurrentAmps, 
-        
+        50.0,
+        coral2IntakeVelocity,
+        coral2IntakeAppliedVoltage,
+        coral2IntakeCurrentAmps,
         coralIntakeVelocity,
         coralIntakeAppliedVoltage,
         coralIntakeCurrentAmps,
-
         algaeIntakeVelocity,
         algaeIntakeAppliedVoltage,
         algaeIntakeCurrentAmps,
-
-        coralDetected
-        );
-        ParentDevice.optimizeBusUtilizationForAll(coralIntakeTalon, coral2IntakeTalon, algaeIntakeTalon);
+        coralDetected);
+    ParentDevice.optimizeBusUtilizationForAll(
+        coralIntakeTalon, coral2IntakeTalon, algaeIntakeTalon);
   }
 
   // connection thing (may be a hard ctrlc ctrlv)
-  final Debouncer coral2IntakeConnectedDebounce = 
-        new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  final Debouncer coral2IntakeConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   final Debouncer coralIntakeConnectedDebounce =
       new Debouncer(0.5, Debouncer.DebounceType.kFalling);
@@ -127,13 +123,10 @@ public class IntakeIOTalonFX implements IntakeIO {
         BaseStatusSignal.refreshAll(
             algaeIntakeAppliedVoltage, algaeIntakeCurrentAmps, algaeIntakeVelocity);
 
-
-    inputs.coral2IntakeConnected = 
+    inputs.coral2IntakeConnected =
         coral2IntakeConnectedDebounce.calculate(coral2IntakeStatus.isOK());
-    inputs.coralIntakeConnected =
-        coralIntakeConnectedDebounce.calculate(coralIntakeStatus.isOK());
-    inputs.coral2IntakeConnected = 
-        algaeIntakeConnectedDebounce.calculate(algaeIntakeStatus.isOK());
+    inputs.coralIntakeConnected = coralIntakeConnectedDebounce.calculate(coralIntakeStatus.isOK());
+    inputs.coral2IntakeConnected = algaeIntakeConnectedDebounce.calculate(algaeIntakeStatus.isOK());
 
     inputs.coral2IntakeVelocityRadsPerSec =
         Units.rotationsToRadians(coral2IntakeVelocity.getValueAsDouble());
@@ -157,6 +150,5 @@ public class IntakeIOTalonFX implements IntakeIO {
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
     algaeIntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
-      }
   }
-
+}

@@ -48,7 +48,6 @@ public class RobotContainer {
           new frc.robot.subsystems.elevator.Elevator(
               new frc.robot.subsystems.elevator.ElevatorIOTalonFX()));
 
-
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
