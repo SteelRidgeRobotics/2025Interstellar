@@ -1,6 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-// import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -27,13 +26,10 @@ public class Elevator extends SubsystemBase {
   private State currentState = State.DEFAULT;
 
   private boolean atSetpoint = true;
-  // private final Debouncer atSetpointDebounce;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
     setName("Elevator");
-
-    // atSetpointDebounce = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
 
   }
 

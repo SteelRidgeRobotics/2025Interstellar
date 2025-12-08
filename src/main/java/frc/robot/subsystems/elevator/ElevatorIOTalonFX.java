@@ -85,7 +85,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     ParentDevice.optimizeBusUtilizationForAll(mainTalon, followerTalon);
 
     mainTalon.setControl(brakeRequest);
-    // followerTalon.setControl(new Follower(mainTalon.getDeviceID(), true));
   }
 
   @Override

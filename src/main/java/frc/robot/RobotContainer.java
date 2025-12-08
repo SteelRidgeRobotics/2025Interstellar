@@ -212,8 +212,6 @@ public class RobotContainer {
         .onTrue(intake.setDesiredStateCommand(State.L1_OUTPUT))
         .onFalse(intake.setDesiredStateCommand(State.HOLD));
 
-    // controller.b().onTrue(intake.setDesiredStateCommand(State.HOLD));
-
     controller
         .y()
         .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.INTAKE)));
