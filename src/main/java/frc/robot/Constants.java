@@ -146,8 +146,8 @@ public final class Constants {
 
     public static final Slot0Configs GAINS =
         new Slot0Configs()
-            .withKP(1)
-            .withKI(0.1)
+            .withKP(5)
+            .withKI(0)
             .withKD(0.0)
             .withKA(0)
             .withKS(0)

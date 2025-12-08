@@ -1,14 +1,8 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.*;
-
-import com.ctre.phoenix6.SignalLogger;
 // import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElevatorConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -32,8 +26,6 @@ public class Elevator extends SubsystemBase {
 
   private State currentState = State.DEFAULT;
 
-  private SysIdRoutine sysID;
-
   private boolean atSetpoint = true;
   // private final Debouncer atSetpointDebounce;
 
@@ -43,15 +35,6 @@ public class Elevator extends SubsystemBase {
 
     // atSetpointDebounce = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
 
-    sysID =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                Volts.of(12),
-                Seconds.of(10.0),
-                state -> SignalLogger.writeString("SysIdElevator_State", state.toString())),
-            new SysIdRoutine.Mechanism(
-                output -> io.setOpenLoop(output.in(Volts)), log -> {}, this));
   }
 
   @Override
@@ -77,17 +60,5 @@ public class Elevator extends SubsystemBase {
             <= ElevatorConstants.SETPOINT_TOLERANCE;
 
     return atSetpoint;
-  }
-
-  public Command stop() {
-    return new InstantCommand(() -> io.setOpenLoop(0), this);
-  }
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return sysID.quasistatic(direction).andThen(stop());
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysID.dynamic(direction).andThen(stop());
   }
 }
