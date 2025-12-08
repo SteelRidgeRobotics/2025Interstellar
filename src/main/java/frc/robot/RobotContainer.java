@@ -33,6 +33,10 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorIOSim;
+import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
@@ -56,6 +60,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Pivot pivot;
+  private final Elevator elevator;
   private final IntakeSubsystem intake;
   private final Superstructure superstructure;
 
@@ -84,8 +89,8 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.BackRight));
 
         intake = new IntakeSubsystem(new IntakeIOTalonFX());
-
         pivot = new Pivot(new PivotIOTalonFX());
+        elevator = new Elevator(new ElevatorIOTalonFX());
         break;
 
       case SIM:
@@ -99,6 +104,7 @@ public class RobotContainer {
                 new ModuleIOSim(swerveDriveSimulation.getModules()[3]));
         intake = new IntakeSubsystem(new IntakeIOSim());
         pivot = new Pivot(new PivotIOSim());
+        elevator = new Elevator(new ElevatorIOSim());
         break;
 
       default:
@@ -113,15 +119,13 @@ public class RobotContainer {
 
         intake = new IntakeSubsystem(new IntakeIO() {});
         pivot = new Pivot(new PivotIO() {});
+        elevator = new Elevator(new ElevatorIO() {});
         break;
     }
 
-    if (RobotBase.isSimulation()) SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);
-    superstructure =
-        new Superstructure(
-            pivot,
-            new frc.robot.subsystems.elevator.Elevator(
-                new frc.robot.subsystems.elevator.ElevatorIOTalonFX()));
+    if (RobotBase.isSimulation())
+      SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);
+    superstructure = new Superstructure(pivot, elevator);
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -208,7 +212,19 @@ public class RobotContainer {
         .onTrue(intake.setDesiredStateCommand(State.L1_OUTPUT))
         .onFalse(intake.setDesiredStateCommand(State.HOLD));
 
-    controller.b().onTrue(intake.setDesiredStateCommand(State.HOLD));
+    // controller.b().onTrue(intake.setDesiredStateCommand(State.HOLD));
+
+    controller
+        .y()
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.INTAKE)));
+
+    controller
+        .b()
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.DEFAULT)));
+
+    controller
+        .a()
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.L1_CORAL)));
   }
   ;
 

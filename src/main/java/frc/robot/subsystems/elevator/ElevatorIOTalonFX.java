@@ -1,6 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.Rotations;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -113,14 +112,9 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   @Override
   public void setPosition(double position) {
 
-      if (mainTalon.getPosition().getValue().in(Rotations) < position) {
-        positionRequest.Acceleration = ElevatorConstants.MM_UPWARDS_ACCELERATION;
-      } else {
-        positionRequest.Acceleration = ElevatorConstants.MM_DOWNWARD_ACCELERATION;
-      }
+    positionRequest.Acceleration = ElevatorConstants.MM_UPWARDS_ACCELERATION;
 
-      positionRequest.Position = position;
-      mainTalon.setControl(positionRequest);
+    positionRequest.Position = position;
+    mainTalon.setControl(positionRequest);
   }
-
 }

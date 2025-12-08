@@ -90,10 +90,4 @@ public class Elevator extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return sysID.dynamic(direction).andThen(stop());
   }
-
-  public double getHeight() {
-    return (Units.radiansToRotations(inputs.positionRads) / ElevatorConstants.GEAR_RATIO)
-        * (2 * Math.PI * 0.508);
-  }
-
 }
