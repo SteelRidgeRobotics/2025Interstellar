@@ -4,8 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface PivotIO {
+
   @AutoLog
-  public static class PivotIOInputs {
+  class PivotIOInputs {
     public boolean pivotConnected = false;
     public double positionRads = 0.0;
     public double velocityRads = 0.0;

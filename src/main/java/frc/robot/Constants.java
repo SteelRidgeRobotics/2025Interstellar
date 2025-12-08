@@ -103,16 +103,16 @@ public final class Constants {
     public static final double MM_CRUISE_VELOCITY = 10;
 
     // postiiotns
-    public static final double START_ANGLE = -0.024902;
-    public static final double STOW_ANGLE = -0.5;
-    public static final double GROUND_INTAKE_ANGLE = -10.591797;
-    public static final double ALGAE_INTAKE_ANGLE = -10.591797;
-    public static final double SCORING_ANGLE = -0.5;
-    public static final double PROCESSOR_SCORING_ANGLE = -8;
+    public static final double START_ANGLE = 0; // -0.024902;
+    // public static final double STOW_ANGLE = 0.1; // -0.5;
+    public static final double GROUND_INTAKE_ANGLE = 1;
+    public static final double ALGAE_INTAKE_ANGLE = 10.591797;
+    public static final double SCORING_ANGLE = 0.5;
+    public static final double PROCESSOR_SCORING_ANGLE = 8;
 
     // other
     public static final double CANCODER_DISCONTINUITY = 0.5;
-    public static final double CANCODER_OFFSET = -0.434326171875;
+    public static final double OFFSET = 8.484473;
 
     public static final double SETPOINT_TOLERANCE = 0.03125;
   }

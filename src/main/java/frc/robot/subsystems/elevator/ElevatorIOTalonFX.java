@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -88,7 +87,7 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     ParentDevice.optimizeBusUtilizationForAll(mainTalon, followerTalon);
 
     mainTalon.setControl(brakeRequest);
-    followerTalon.setControl(new Follower(mainTalon.getDeviceID(), true));
+    // followerTalon.setControl(new Follower(mainTalon.getDeviceID(), true));
   }
 
   @Override

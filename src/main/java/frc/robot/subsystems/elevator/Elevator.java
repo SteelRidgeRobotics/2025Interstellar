@@ -3,7 +3,7 @@ package frc.robot.subsystems.elevator;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import edu.wpi.first.math.filter.Debouncer;
+// import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
@@ -44,13 +44,13 @@ public class Elevator extends SubsystemBase {
   private SysIdRoutine sysID;
 
   private boolean atSetpoint = true;
-  private final Debouncer atSetpointDebounce;
+  // private final Debouncer atSetpointDebounce;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
     setName("Elevator");
 
-    atSetpointDebounce = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
+    // atSetpointDebounce = new Debouncer(0.1, Debouncer.DebounceType.kBoth);
 
     sysID =
         new SysIdRoutine(

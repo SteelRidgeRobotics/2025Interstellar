@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.Pivot;
 
 public class Superstructure extends SubsystemBase {
   private final Pivot pivot;
   private final Elevator elevator;
+  private final IntakeSubsystem intake;
 
   public enum States {
     DEFAULT,

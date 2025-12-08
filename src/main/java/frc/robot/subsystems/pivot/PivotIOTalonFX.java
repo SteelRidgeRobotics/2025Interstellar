@@ -7,7 +7,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
-import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -49,7 +48,7 @@ public class PivotIOTalonFX implements PivotIO {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     motorConfig.Slot0 = Constants.PivotConstants.GAINS;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     motorConfig.Feedback.SensorToMechanismRatio = Constants.PivotConstants.GEAR_RATIO;
     motorConfig.MotionMagic.MotionMagicAcceleration = Constants.PivotConstants.MM_ACCELERATION;
     motorConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.PivotConstants.MM_CRUISE_VELOCITY;
@@ -63,9 +62,9 @@ public class PivotIOTalonFX implements PivotIO {
     mainStatorCurrent = mainTalon.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, mainVelocity, mainAppliedVolts, mainStatorCurrent);
+        50.0, mainVelocity, mainAppliedVolts, mainStatorCurrent, mainPosition);
 
-    ParentDevice.optimizeBusUtilizationForAll(mainTalon, followerTalon);
+    tryUntilOk(5, () -> mainTalon.setPosition(Constants.PivotConstants.OFFSET, 0.25));
   }
 
   @Override
