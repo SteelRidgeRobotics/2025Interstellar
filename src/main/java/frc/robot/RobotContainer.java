@@ -36,6 +36,10 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.State;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIO;
+import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -47,6 +51,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Pivot pivot;
+  private final IntakeSubsystem intake;
+  private final Superstructure superstructure;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -69,6 +76,7 @@ public class RobotContainer {
 
         intake = new IntakeSubsystem(new IntakeIOTalonFX());
 
+        pivot = new Pivot(new PivotIOTalonFX());
         break;
 
       case SIM:
@@ -82,6 +90,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         intake = new IntakeSubsystem(new IntakeIOSim());
+        pivot = new Pivot(new PivotIOSim());
         break;
 
       default:
@@ -95,8 +104,15 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         intake = new IntakeSubsystem(new IntakeIO() {});
+        pivot = new Pivot(new PivotIO() {});
         break;
     }
+
+    superstructure =
+        new Superstructure(
+            pivot,
+            new frc.robot.subsystems.elevator.Elevator(
+                new frc.robot.subsystems.elevator.ElevatorIOTalonFX()));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
