@@ -8,6 +8,7 @@ public interface PivotIO {
   @AutoLog
   class PivotIOInputs {
     public boolean pivotConnected = false;
+    public Rotation2d pivotAbsolutePosition = Rotation2d.kZero;
     public double positionRads = 0.0;
     public double velocityRads = 0.0;
     public double pivotAppliedVolts = 0.0;
