@@ -52,6 +52,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.ironmaple.simulation.drivesims.COTS;
+import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -105,6 +107,22 @@ public class Drive extends SubsystemBase {
       };
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+
+  public static final DriveTrainSimulationConfig driveTrainSimulationConfig =
+      DriveTrainSimulationConfig.Default()
+          // Specify gyro type (for realistic gyro drifting and error simulation)
+          .withGyro(COTS.ofPigeon2())
+          // Specify swerve module (for realistic swerve dynamics)
+          .withSwerveModule(
+              COTS.ofMark4i(
+                  DCMotor.getKrakenX60(1), // Drive motor is a Kraken X60
+                  DCMotor.getKrakenX60(1), // Steer motor is a Kraken X60
+                  COTS.WHEELS.DEFAULT_NEOPRENE_TREAD.cof, // Use the COF for Wheels
+                  2)) // L2 Gear ratio
+          // Configures the track length and track width (spacing between swerve modules)
+          .withTrackLengthTrackWidth(Inches.of(24), Inches.of(24))
+          // Configures the bumper size (dimensions of the robot bumper)
+          .withBumperSize(Inches.of(36), Inches.of(36));
 
   public Drive(
       GyroIO gyroIO,
