@@ -35,6 +35,10 @@ import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIO;
+import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOTalonFX;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -46,13 +50,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Superstructure superstructure =
-      new Superstructure(
-          new frc.robot.subsystems.pivot.Pivot(new frc.robot.subsystems.pivot.PivotIOTalonFX()),
-          new frc.robot.subsystems.elevator.Elevator(
-              new frc.robot.subsystems.elevator.ElevatorIOTalonFX()),
-          new frc.robot.subsystems.intake.IntakeSubsystem(
-              new frc.robot.subsystems.intake.IntakeIOTalonFX()));
+  private final Pivot pivot;
+  private final Superstructure superstructure;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -77,6 +76,7 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+        pivot = new Pivot(new PivotIOTalonFX());
         break;
 
       case SIM:
@@ -88,6 +88,7 @@ public class RobotContainer {
                 new ModuleIOSim(swerveDriveSimulation.getModules()[1]),
                 new ModuleIOSim(swerveDriveSimulation.getModules()[2]),
                 new ModuleIOSim(swerveDriveSimulation.getModules()[3]));
+            pivot = new Pivot(new PivotIOSim());
         break;
 
       default:
@@ -99,11 +100,19 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        pivot = new Pivot(new PivotIO() {});
         break;
     }
 
     if (RobotBase.isSimulation())
       SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);
+    superstructure =
+        new Superstructure(
+            pivot,
+            new frc.robot.subsystems.elevator.Elevator(
+                new frc.robot.subsystems.elevator.ElevatorIOTalonFX()),
+            new frc.robot.subsystems.intake.IntakeSubsystem(
+                new frc.robot.subsystems.intake.IntakeIOTalonFX()));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
