@@ -1,22 +1,19 @@
 package frc.robot.subsystems.pivot;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.SignalLogger;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.PivotConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Pivot extends SubsystemBase {
-
-  private TalonFX masterMotor = new TalonFX(frc.robot.Constants.CanIDs.LEFT_PIVOT_TALON);
-  private TalonFX followerMotor = new TalonFX(frc.robot.Constants.CanIDs.RIGHT_PIVOT_TALON);
-  private MotionMagicDutyCycle motionMagicControl;
 
   public enum State {
     DEFAULT(PivotConstants.START_ANGLE),
@@ -35,10 +32,26 @@ public class Pivot extends SubsystemBase {
 
   private State currentState = State.DEFAULT;
 
+  private final SysIdRoutine sysIdRoutine;
+
+  private final Debouncer atSetPointDebounce;
+
   public Pivot(PivotIO io) {
 
     this.io = io;
     setName("Pivot");
+
+    atSetPointDebounce = new Debouncer(0.1, Debouncer.DebounceType.kRising);
+
+    sysIdRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                Volts.of(12),
+                Seconds.of(10.0),
+                state -> SignalLogger.writeString("SysIdPivot_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                output -> io.setOpenLoop(output.in(Volts)), log -> {}, this));
   }
 
   @Override
@@ -52,13 +65,27 @@ public class Pivot extends SubsystemBase {
     io.setPosition(currentState.rotation);
   }
 
+  @AutoLogOutput(key = "Pivot/At Setpoint")
+  public boolean isAtSetpoint() {
+    return atSetPointDebounce.calculate(
+        Math.abs(inputs.positionRads.minus(currentState.rotation).getRotations())
+            <= Constants.PivotConstants.SETPOINT_TOLERANCE);
+  }
+
   @AutoLogOutput(key = "Pivot/State")
   public State getState() {
     return currentState;
   }
 
-  public void setPosition(double setpoint) {
+  public Command stop() {
+    return runOnce(() -> io.setOpenLoop(0.0));
+  }
 
-    masterMotor.setControl(motionMagicControl.withPosition(setpoint));
+  public void sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    sysIdRoutine.quasistatic(direction).andThen(this.stop());
+  }
+
+  public void sysIdDynamic(SysIdRoutine.Direction direction) {
+    sysIdRoutine.quasistatic(direction).andThen(this.stop());
   }
 }
