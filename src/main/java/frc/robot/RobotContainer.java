@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,9 +29,16 @@ import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.pivot.Pivot;
+import frc.robot.subsystems.pivot.PivotIO;
+import frc.robot.subsystems.pivot.PivotIOSim;
+import frc.robot.subsystems.pivot.PivotIOTalonFX;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,19 +50,19 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
-  private final Superstructure superstructure =
-      new Superstructure(
-          new frc.robot.subsystems.pivot.Pivot(new frc.robot.subsystems.pivot.PivotIOTalonFX()),
-          new frc.robot.subsystems.elevator.Elevator(
-              new frc.robot.subsystems.elevator.ElevatorIOTalonFX()),
-          new frc.robot.subsystems.intake.IntakeSubsystem(
-              new frc.robot.subsystems.intake.IntakeIOTalonFX()));
+  private final Pivot pivot;
+  private final Superstructure superstructure;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+
+  // Maplesim swerve sim
+  public static SwerveDriveSimulation swerveDriveSimulation =
+      new SwerveDriveSimulation(
+          Drive.driveTrainSimulationConfig, new Pose2d(3, 3, Rotation2d.kZero));
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -68,17 +76,19 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+        pivot = new Pivot(new PivotIOTalonFX());
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive =
             new Drive(
-                new GyroIO() {},
-                new ModuleIOSim(TunerConstants.FrontLeft),
-                new ModuleIOSim(TunerConstants.FrontRight),
-                new ModuleIOSim(TunerConstants.BackLeft),
-                new ModuleIOSim(TunerConstants.BackRight));
+                new GyroIOSim(swerveDriveSimulation.getGyroSimulation()),
+                new ModuleIOSim(swerveDriveSimulation.getModules()[0]),
+                new ModuleIOSim(swerveDriveSimulation.getModules()[1]),
+                new ModuleIOSim(swerveDriveSimulation.getModules()[2]),
+                new ModuleIOSim(swerveDriveSimulation.getModules()[3]));
+        pivot = new Pivot(new PivotIOSim());
         break;
 
       default:
@@ -90,8 +100,18 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+        pivot = new Pivot(new PivotIO() {});
         break;
     }
+
+    if (RobotBase.isSimulation()) SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);
+    superstructure =
+        new Superstructure(
+            pivot,
+            new frc.robot.subsystems.elevator.Elevator(
+                new frc.robot.subsystems.elevator.ElevatorIOTalonFX()),
+            new frc.robot.subsystems.intake.IntakeSubsystem(
+                new frc.robot.subsystems.intake.IntakeIOTalonFX()));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

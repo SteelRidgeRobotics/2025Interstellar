@@ -34,20 +34,24 @@ public class Superstructure extends SubsystemBase {
   public void setGoal(States state) {
     this.currentState = state;
     switch (currentState) {
-      case DEFAULT:
+      case DEFAULT -> {
         pivot.setState(Pivot.State.DEFAULT);
         elevator.setState(Elevator.State.DEFAULT);
         intake.setState(IntakeSubsystem.State.HOLD);
-      case L2_CORAL:
+      }
+      case L2_CORAL -> {
         pivot.setState(Pivot.State.SCORING);
         elevator.setState(Elevator.State.L2);
-      case L1_CORAL:
+      }
+      case L1_CORAL -> {
         pivot.setState(Pivot.State.SCORING);
         elevator.setState(Elevator.State.L1);
-      case INTAKE:
+      }
+      case INTAKE -> {
         pivot.setState(Pivot.State.INTAKE);
         elevator.setState(Elevator.State.DEFAULT);
         intake.setState(IntakeSubsystem.State.CORAL_INTAKE);
+      }
     }
   }
 }
