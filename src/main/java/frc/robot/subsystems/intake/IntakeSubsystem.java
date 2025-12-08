@@ -11,19 +11,21 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
   public enum State {
-    HOLD(0, false),
-    ALGAE_HOLD(IntakeConstants.ALGAE_HOLD, true),
-    CORAL_INTAKE(IntakeConstants.CORAL_INTAKE_SPEED, false),
-    CORAL_OUTPUT(IntakeConstants.CORAL_OUTPUT_SPEED, true),
-    ALGAE_INTAKE(IntakeConstants.ALGAE_INTAKE_SPEED, false),
-    ALGAE_OUTPUT(IntakeConstants.ALGAE_OUTPUT_SPEED, true),
-    L1_OUTPUT(IntakeConstants.L1_OUTPUT_SPEED, true);
+    HOLD(0, 0, false),
+    ALGAE_HOLD(0, IntakeConstants.ALGAE_HOLD, true),
+    CORAL_INTAKE(IntakeConstants.CORAL_INTAKE_SPEED, 0, false),
+    CORAL_OUTPUT(IntakeConstants.CORAL_OUTPUT_SPEED, 0, true),
+    ALGAE_INTAKE(0, IntakeConstants.ALGAE_INTAKE_SPEED, false),
+    ALGAE_OUTPUT(0, IntakeConstants.ALGAE_OUTPUT_SPEED, true),
+    L1_OUTPUT(IntakeConstants.L1_OUTPUT_SPEED, 0, true);
 
-    public final double output;
+    public final double algaeOutput;
+    public final double coralOutput;
     public final boolean ignoreLimits;
 
-    State(double output, Boolean ignoreLimits) {
-      this.output = output;
+    State(double coralOutput, double algaeOutput, boolean ignoreLimits) {
+      this.coralOutput = coralOutput;
+      this.algaeOutput = algaeOutput;
       this.ignoreLimits = ignoreLimits;
     }
   }
@@ -31,8 +33,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  private final Alert topintakeDisconnectAlert;
-  private final Alert bottomIntakeDisconnecAlert;
+  private final Alert coralIntakeDisconnectAlert;
+  private final Alert coral2IntakeDisconnectAlert;
+  private final Alert algaeIntakeDisconnectAlert;
 
   private State currentState = State.HOLD;
 
@@ -40,8 +43,9 @@ public class IntakeSubsystem extends SubsystemBase {
     this.io = io;
     setName("Intake");
 
-    topintakeDisconnectAlert = new Alert("Top intake motor disconnected", AlertType.kError);
-    bottomIntakeDisconnecAlert = new Alert("Bottom intake motor disconnected", AlertType.kError);
+    coralIntakeDisconnectAlert = new Alert("Coral intake motor disconnected", AlertType.kError);
+    coral2IntakeDisconnectAlert = new Alert("Coral2 intake motor disconnected", AlertType.kError);
+    algaeIntakeDisconnectAlert = new Alert("Algae intake motor disconnected", AlertType.kError);
   }
 
   @Override
@@ -49,8 +53,9 @@ public class IntakeSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
 
-    topintakeDisconnectAlert.set(!inputs.topIntakeConnected);
-    bottomIntakeDisconnecAlert.set(!inputs.bottomIntakeConnected);
+    coralIntakeDisconnectAlert.set(!inputs.coralIntakeConnected);
+    coral2IntakeDisconnectAlert.set(!inputs.coral2IntakeConnected);
+    algaeIntakeDisconnectAlert.set(!inputs.algaeIntakeConnected);
   }
 
   @AutoLogOutput(key = "Intake/State")
@@ -62,7 +67,8 @@ public class IntakeSubsystem extends SubsystemBase {
     currentState = state;
     boolean ignoringLimits = state.ignoreLimits;
     Logger.recordOutput("Intake/Ignoring Limit Switch", ignoringLimits);
-    io.setIntakeOpenLoop(currentState.output, ignoringLimits);
+    io.setAlgaeOpenLoop(currentState.algaeOutput, ignoringLimits);
+    io.setCoralOpenLoop(currentState.coralOutput, ignoringLimits);
   }
 
   public Command setDesiredStateCommand(State state) {
