@@ -32,7 +32,7 @@ public class PivotIOSim implements PivotIO {
             new TrapezoidProfile.Constraints(
                 Units.rotationsToRadians(Constants.PivotConstants.MM_CRUISE_VELOCITY),
                 Units.rotationsToRadians(Constants.PivotConstants.MM_ACCELERATION)));
-    controller.enableContinuousInput(-Math.PI, Math.PI);
+    // controller.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -47,7 +47,7 @@ public class PivotIOSim implements PivotIO {
     pivotSim.update(0.02);
 
     inputs.pivotConnected = true;
-    inputs.positionRads = pivotSim.getAngularPositionRad();
+    inputs.positionRads = new Rotation2d(pivotSim.getAngularPosition());
     inputs.velocityRads = pivotSim.getAngularVelocityRadPerSec();
     inputs.pivotAppliedVolts = appliedVolts;
     inputs.statorCurrent = Math.abs(pivotSim.getCurrentDrawAmps());

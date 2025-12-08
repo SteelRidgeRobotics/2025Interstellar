@@ -33,10 +33,10 @@ public class PivotIOTalonFX implements PivotIO {
           Constants.PivotConstants.MM_ACCELERATION,
           0);
 
-  private final StatusSignal<Angle> mainPosition;
-  private final StatusSignal<AngularVelocity> mainVelocity;
-  private final StatusSignal<Voltage> mainAppliedVolts;
-  private final StatusSignal<Current> mainStatorCurrent;
+  private final StatusSignal<Angle> positionRads;
+  private final StatusSignal<AngularVelocity> velocityRads;
+  private final StatusSignal<Voltage> pivotAppliedVolts;
+  private final StatusSignal<Current> statorCurrent;
 
   private final Debouncer mainTalonConnectedDebounce = new Debouncer(0.5);
   private final Debouncer followerTalonConnectedDebounce = new Debouncer(0.5);
@@ -56,13 +56,13 @@ public class PivotIOTalonFX implements PivotIO {
     tryUntilOk(5, () -> mainTalon.getConfigurator().apply(motorConfig, 0.25));
     tryUntilOk(5, () -> followerTalon.getConfigurator().apply(motorConfig, 0.25));
 
-    mainPosition = mainTalon.getPosition();
-    mainVelocity = mainTalon.getVelocity();
-    mainAppliedVolts = mainTalon.getMotorVoltage();
-    mainStatorCurrent = mainTalon.getStatorCurrent();
+    // pivotAbsolutePosition =
+    positionRads = mainTalon.getPosition();
+    velocityRads = mainTalon.getVelocity();
+    pivotAppliedVolts = mainTalon.getMotorVoltage();
+    statorCurrent = mainTalon.getStatorCurrent();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0, mainVelocity, mainAppliedVolts, mainStatorCurrent, mainPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(50.0, positionRads, velocityRads, statorCurrent);
 
     tryUntilOk(5, () -> mainTalon.setPosition(Constants.PivotConstants.OFFSET, 0.25));
   }
@@ -70,15 +70,14 @@ public class PivotIOTalonFX implements PivotIO {
   @Override
   public void updateInputs(PivotIOInputs inputs) {
     var talonStatus =
-        BaseStatusSignal.refreshAll(
-            mainPosition, mainVelocity, mainAppliedVolts, mainStatorCurrent);
+        BaseStatusSignal.refreshAll(positionRads, velocityRads, pivotAppliedVolts, statorCurrent);
 
     inputs.pivotConnected = mainTalonConnectedDebounce.calculate(talonStatus.isOK());
     inputs.pivotConnected = followerTalonConnectedDebounce.calculate(followerTalon.isConnected());
-    inputs.positionRads = Units.rotationsToRadians(mainPosition.getValueAsDouble());
-    inputs.velocityRads = Units.rotationsToRadians(mainVelocity.getValueAsDouble());
-    inputs.pivotAppliedVolts = mainAppliedVolts.getValueAsDouble();
-    inputs.statorCurrent = mainStatorCurrent.getValueAsDouble();
+    inputs.positionRads = Rotation2d.fromRotations(positionRads.getValueAsDouble());
+    inputs.velocityRads = Units.rotationsToRadians(velocityRads.getValueAsDouble());
+    inputs.pivotAppliedVolts = pivotAppliedVolts.getValueAsDouble();
+    inputs.statorCurrent = statorCurrent.getValueAsDouble();
   }
 
   @Override

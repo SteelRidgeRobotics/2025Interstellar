@@ -9,16 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-// import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Pivot extends SubsystemBase {
-
-  // private TalonFX masterMotor = new TalonFX(frc.robot.Constants.CanIDs.LEFT_PIVOT_TALON);
-  // private TalonFX followerMotor = new TalonFX(frc.robot.Constants.CanIDs.RIGHT_PIVOT_TALON);
-  // private MotionMagicDutyCycle motionMagicControl;
 
   public enum State {
     DEFAULT(PivotConstants.START_ANGLE),
@@ -73,7 +68,7 @@ public class Pivot extends SubsystemBase {
   @AutoLogOutput(key = "Pivot/At Setpoint")
   public boolean isAtSetpoint() {
     return atSetPointDebounce.calculate(
-        Math.abs(inputs.pivotAbsolutePosition.minus(currentState.rotation).getRotations())
+        Math.abs(inputs.positionRads.minus(currentState.rotation).getRotations())
             <= Constants.PivotConstants.SETPOINT_TOLERANCE);
   }
 
@@ -93,9 +88,4 @@ public class Pivot extends SubsystemBase {
   public void sysIdDynamic(SysIdRoutine.Direction direction) {
     sysIdRoutine.quasistatic(direction).andThen(this.stop());
   }
-
-  /*public void setPosition(double setpoint) {
-
-    masterMotor.setControl(motionMagicControl.withPosition(setpoint));
-  } */
 }
