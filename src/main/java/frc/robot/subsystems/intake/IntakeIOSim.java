@@ -23,33 +23,40 @@ public class IntakeIOSim implements IntakeIO {
               algaeIntakeSim, 0.01, Constants.IntakeConstants.GEAR_RATIO),
           algaeIntakeSim);
 
-  private double intakeAppliedVolts = 0.0;
+  private double coralIntakeAppliedVolts = 0.0;
+  private double algaeIntakeAppliedVolts = 0.0;
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    intakeSim.setInputVoltage(MathUtil.clamp(intakeAppliedVolts, -12, 12));
+    intakeSim.setInputVoltage(MathUtil.clamp(coralIntakeAppliedVolts, -12, 12));
     intakeSim.update(0.02);
 
-    algaeSim.setInputVoltage(MathUtil.clamp(intakeAppliedVolts, -12, 12));
+    algaeSim.setInputVoltage(MathUtil.clamp(algaeIntakeAppliedVolts, -12, 12));
     algaeSim.update(0.02);
 
     inputs.algaeIntakeConnected = true;
     inputs.algaeIntakeVelocityRadsPerSec = algaeSim.getAngularVelocityRadPerSec();
-    inputs.algaeIntakeAppliedVoltage = intakeAppliedVolts;
+    inputs.algaeIntakeAppliedVoltage = algaeIntakeAppliedVolts;
     inputs.algaeIntakeCurrentAmps = Math.abs(algaeSim.getCurrentDrawAmps());
 
     inputs.coralIntakeConnected = true;
     inputs.coralIntakeVelocityRadsPerSec = intakeSim.getAngularVelocityRadPerSec();
-    inputs.coralIntakeAppliedVoltage = intakeAppliedVolts;
+    inputs.coralIntakeAppliedVoltage = coralIntakeAppliedVolts;
     inputs.coralIntakeCurrentAmps = Math.abs(intakeSim.getCurrentDrawAmps());
 
     inputs.coral2IntakeConnected = true;
     inputs.coral2IntakeVelocityRadsPerSec = intakeSim.getAngularVelocityRadPerSec();
-    inputs.coral2IntakeAppliedVoltage = intakeAppliedVolts;
+    inputs.coral2IntakeAppliedVoltage = coralIntakeAppliedVolts;
     inputs.coral2IntakeCurrentAmps = Math.abs(intakeSim.getCurrentDrawAmps());
   }
 
-  public void setIntakeOpenLoop(double output) {
-    intakeAppliedVolts = output;
+  @Override
+  public void setCoralOpenLoop(double output, boolean ignoreLimits) {
+    coralIntakeAppliedVolts = output;
+  }
+
+  @Override
+  public void setAlgaeOpenLoop(double output, boolean ignoreLimits) {
+    algaeIntakeAppliedVolts = output;
   }
 }

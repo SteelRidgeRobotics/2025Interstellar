@@ -143,11 +143,15 @@ public class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void setIntakeOpenLoop(double output, boolean ignoreLimits) {
+  public void setCoralOpenLoop(double output, boolean ignoreLimits) {
     coral2IntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
     coralIntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
+  }
+
+  @Override
+  public void setAlgaeOpenLoop(double output, boolean ignoreLimits) {
     algaeIntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
   }

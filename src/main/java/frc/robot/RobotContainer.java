@@ -31,6 +31,11 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.State;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -42,6 +47,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final IntakeSubsystem intake;
   private final Superstructure superstructure =
       new Superstructure(
           new frc.robot.subsystems.pivot.Pivot(new frc.robot.subsystems.pivot.PivotIOTalonFX()),
@@ -66,6 +72,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+
+        intake = new IntakeSubsystem(new IntakeIOTalonFX());
+
         break;
 
       case SIM:
@@ -77,6 +86,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+
+        intake = new IntakeSubsystem(new IntakeIOSim());
         break;
 
       default:
@@ -88,6 +99,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+
+        intake = new IntakeSubsystem(new IntakeIO() {});
         break;
     }
 
@@ -144,7 +157,7 @@ public class RobotContainer {
 
     // Reset gyro to 0° when LeftBumper button is pressed
     controller
-        .leftBumper()
+        .start()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -152,6 +165,46 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    //functions (algae and coral intake and output)
+    controller.leftBumper()
+    .onTrue(
+        intake.setDesiredStateCommand(State.CORAL_INTAKE))
+    .onFalse(
+        intake.setDesiredStateCommand(State.HOLD) 
+    );
+
+    (controller.back().and(controller.leftBumper()))
+    .onTrue(
+        intake.setDesiredStateCommand(State.ALGAE_INTAKE))
+    .onFalse(
+        intake.setDesiredStateCommand(State.ALGAE_HOLD) 
+    );
+
+    controller.rightBumper()
+    .onTrue(
+        intake.setDesiredStateCommand(State.CORAL_OUTPUT))
+    .onFalse(
+        intake.setDesiredStateCommand(State.HOLD) 
+    );
+
+    (controller.start().and(controller.rightBumper()))
+    .onTrue(
+        intake.setDesiredStateCommand(State.ALGAE_OUTPUT))
+    .onFalse(
+        intake.setDesiredStateCommand(State.HOLD) 
+    );
+    //l1 output
+    (controller.back().and(controller.rightBumper()))
+    .onTrue(
+        intake.setDesiredStateCommand(State.L1_OUTPUT))
+    .onFalse(
+        intake.setDesiredStateCommand(State.HOLD) 
+    );
+
+
+
+    controller.b().onTrue(intake.setDesiredStateCommand(State.HOLD));
   }
 
   /**

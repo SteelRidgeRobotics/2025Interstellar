@@ -25,5 +25,7 @@ public interface IntakeIO {
 
   default void updateInputs(IntakeIOInputs inputs) {}
 
-  default void setIntakeOpenLoop(double output, boolean ignoreLimits) {}
+  default void setCoralOpenLoop(double output, boolean ignoreLimits) {}
+
+  default void setAlgaeOpenLoop(double output, boolean ignoreLimits) {}
 }

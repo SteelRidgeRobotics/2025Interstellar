@@ -11,19 +11,21 @@ import org.littletonrobotics.junction.Logger;
 
 public class IntakeSubsystem extends SubsystemBase {
   public enum State {
-    HOLD(0, false),
-    ALGAE_HOLD(IntakeConstants.ALGAE_HOLD, true),
-    CORAL_INTAKE(IntakeConstants.CORAL_INTAKE_SPEED, false),
-    CORAL_OUTPUT(IntakeConstants.CORAL_OUTPUT_SPEED, true),
-    ALGAE_INTAKE(IntakeConstants.ALGAE_INTAKE_SPEED, false),
-    ALGAE_OUTPUT(IntakeConstants.ALGAE_OUTPUT_SPEED, true),
-    L1_OUTPUT(IntakeConstants.L1_OUTPUT_SPEED, true);
+    HOLD(0, 0, false),
+    ALGAE_HOLD(0, IntakeConstants.ALGAE_HOLD, true),
+    CORAL_INTAKE(IntakeConstants.CORAL_INTAKE_SPEED, 0, false),
+    CORAL_OUTPUT(IntakeConstants.CORAL_OUTPUT_SPEED, 0, true),
+    ALGAE_INTAKE(0, IntakeConstants.ALGAE_INTAKE_SPEED, false),
+    ALGAE_OUTPUT(0, IntakeConstants.ALGAE_OUTPUT_SPEED, true),
+    L1_OUTPUT(IntakeConstants.L1_OUTPUT_SPEED, 0, true);
 
-    public final double output;
+    public final double algaeOutput;
+    public final double coralOutput;
     public final boolean ignoreLimits;
 
-    State(double output, boolean ignoreLimits) {
-      this.output = output;
+    State(double coralOutput, double algaeOutput, boolean ignoreLimits) {
+      this.coralOutput = coralOutput;
+      this.algaeOutput = algaeOutput;
       this.ignoreLimits = ignoreLimits;
     }
   }
@@ -65,7 +67,8 @@ public class IntakeSubsystem extends SubsystemBase {
     currentState = state;
     boolean ignoringLimits = state.ignoreLimits;
     Logger.recordOutput("Intake/Ignoring Limit Switch", ignoringLimits);
-    io.setIntakeOpenLoop(currentState.output, ignoringLimits);
+    io.setAlgaeOpenLoop(currentState.algaeOutput, ignoringLimits);
+    io.setCoralOpenLoop(currentState.coralOutput, ignoringLimits);
   }
 
   public Command setDesiredStateCommand(State state) {
