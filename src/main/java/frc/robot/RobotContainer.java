@@ -33,6 +33,11 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.State;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOSim;
@@ -51,6 +56,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Pivot pivot;
+  private final IntakeSubsystem intake;
   private final Superstructure superstructure;
 
   // Controller
@@ -76,6 +82,9 @@ public class RobotContainer {
                 new ModuleIOTalonFX(TunerConstants.FrontRight),
                 new ModuleIOTalonFX(TunerConstants.BackLeft),
                 new ModuleIOTalonFX(TunerConstants.BackRight));
+
+        intake = new IntakeSubsystem(new IntakeIOTalonFX());
+
         pivot = new Pivot(new PivotIOTalonFX());
         break;
 
@@ -88,6 +97,7 @@ public class RobotContainer {
                 new ModuleIOSim(swerveDriveSimulation.getModules()[1]),
                 new ModuleIOSim(swerveDriveSimulation.getModules()[2]),
                 new ModuleIOSim(swerveDriveSimulation.getModules()[3]));
+        intake = new IntakeSubsystem(new IntakeIOSim());
         pivot = new Pivot(new PivotIOSim());
         break;
 
@@ -100,6 +110,8 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
+
+        intake = new IntakeSubsystem(new IntakeIO() {});
         pivot = new Pivot(new PivotIO() {});
         break;
     }
@@ -109,9 +121,7 @@ public class RobotContainer {
         new Superstructure(
             pivot,
             new frc.robot.subsystems.elevator.Elevator(
-                new frc.robot.subsystems.elevator.ElevatorIOTalonFX()),
-            new frc.robot.subsystems.intake.IntakeSubsystem(
-                new frc.robot.subsystems.intake.IntakeIOTalonFX()));
+                new frc.robot.subsystems.elevator.ElevatorIOTalonFX()));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -166,7 +176,7 @@ public class RobotContainer {
 
     // Reset gyro to 0° when LeftBumper button is pressed
     controller
-        .leftBumper()
+        .start()
         .onTrue(
             Commands.runOnce(
                     () ->
@@ -175,17 +185,30 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    // functions (algae and coral intake and output)
     controller
-        .y()
-        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.INTAKE)));
+        .leftBumper()
+        .onTrue(intake.setDesiredStateCommand(State.CORAL_INTAKE))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+
+    (controller.back().and(controller.leftBumper()))
+        .onTrue(intake.setDesiredStateCommand(State.ALGAE_INTAKE))
+        .onFalse(intake.setDesiredStateCommand(State.ALGAE_HOLD));
 
     controller
-        .b()
-        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.DEFAULT)));
+        .rightBumper()
+        .onTrue(intake.setDesiredStateCommand(State.CORAL_OUTPUT))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
 
-    controller
-        .a()
-        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.L1_CORAL)));
+    (controller.start().and(controller.rightBumper()))
+        .onTrue(intake.setDesiredStateCommand(State.ALGAE_OUTPUT))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+    // l1 output
+    (controller.back().and(controller.rightBumper()))
+        .onTrue(intake.setDesiredStateCommand(State.L1_OUTPUT))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+
+    controller.b().onTrue(intake.setDesiredStateCommand(State.HOLD));
   }
   ;
 
