@@ -104,8 +104,7 @@ public class RobotContainer {
         break;
     }
 
-    if (RobotBase.isSimulation())
-      SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);
+    if (RobotBase.isSimulation()) SimulatedArena.getInstance().addDriveTrainSimulation(swerveDriveSimulation);
     superstructure =
         new Superstructure(
             pivot,
