@@ -1,6 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.Rotations;
 import static frc.robot.util.PhoenixUtil.tryUntilOk;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -23,7 +22,6 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import java.util.Optional;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
 
@@ -87,7 +85,6 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     ParentDevice.optimizeBusUtilizationForAll(mainTalon, followerTalon);
 
     mainTalon.setControl(brakeRequest);
-    // followerTalon.setControl(new Follower(mainTalon.getDeviceID(), true));
   }
 
   @Override
@@ -112,19 +109,11 @@ public class ElevatorIOTalonFX implements ElevatorIO {
   }
 
   @Override
-  public void setPosition(Optional<Double> position) {
-    if (position.isEmpty()) {
-      brakeRequest.Position = mainTalon.getPosition().getValueAsDouble();
-      mainTalon.setControl(brakeRequest);
-    } else {
-      if (mainTalon.getPosition().getValue().in(Rotations) < position.get()) {
-        positionRequest.Acceleration = ElevatorConstants.MM_UPWARDS_ACCELERATION;
-      } else {
-        positionRequest.Acceleration = ElevatorConstants.MM_DOWNWARD_ACCELERATION;
-      }
+  public void setPosition(double position) {
 
-      positionRequest.Position = position.get();
-      mainTalon.setControl(positionRequest);
-    }
+    positionRequest.Acceleration = ElevatorConstants.MM_UPWARDS_ACCELERATION;
+
+    positionRequest.Position = position;
+    mainTalon.setControl(positionRequest);
   }
 }

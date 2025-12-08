@@ -1,6 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.Optional;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ElevatorIO {
@@ -19,5 +18,5 @@ public interface ElevatorIO {
 
   default void setOpenLoop(double output) {}
 
-  default void setPosition(Optional<Double> position) {}
+  default void setPosition(double position) {}
 }
