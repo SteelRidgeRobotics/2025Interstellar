@@ -32,7 +32,6 @@ public class PivotIOSim implements PivotIO {
             new TrapezoidProfile.Constraints(
                 Units.rotationsToRadians(Constants.PivotConstants.MM_CRUISE_VELOCITY),
                 Units.rotationsToRadians(Constants.PivotConstants.MM_ACCELERATION)));
-    // controller.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
