@@ -175,6 +175,31 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
                     drive)
                 .ignoringDisable(true));
+
+    // functions (algae and coral intake and output)
+    controller
+        .leftBumper()
+        .onTrue(intake.setDesiredStateCommand(State.CORAL_INTAKE))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+
+    (controller.back().and(controller.leftBumper()))
+        .onTrue(intake.setDesiredStateCommand(State.ALGAE_INTAKE))
+        .onFalse(intake.setDesiredStateCommand(State.ALGAE_HOLD));
+
+    controller
+        .rightBumper()
+        .onTrue(intake.setDesiredStateCommand(State.CORAL_OUTPUT))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+
+    (controller.start().and(controller.rightBumper()))
+        .onTrue(intake.setDesiredStateCommand(State.ALGAE_OUTPUT))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+    // l1 output
+    (controller.back().and(controller.rightBumper()))
+        .onTrue(intake.setDesiredStateCommand(State.L1_OUTPUT))
+        .onFalse(intake.setDesiredStateCommand(State.HOLD));
+
+    controller.b().onTrue(intake.setDesiredStateCommand(State.HOLD));
   }
   ;
 
