@@ -147,7 +147,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     coral2IntakeTalon.setControl(
         dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
     coralIntakeTalon.setControl(
-        dutyCycleRequest.withOutput(output).withIgnoreHardwareLimits(ignoreLimits));
+        dutyCycleRequest.withOutput(-output).withIgnoreHardwareLimits(ignoreLimits));
   }
 
   @Override

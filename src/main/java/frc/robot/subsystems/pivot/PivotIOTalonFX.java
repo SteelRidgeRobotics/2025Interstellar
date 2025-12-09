@@ -48,7 +48,7 @@ public class PivotIOTalonFX implements PivotIO {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     motorConfig.Slot0 = Constants.PivotConstants.GAINS;
     motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    motorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     motorConfig.Feedback.SensorToMechanismRatio = Constants.PivotConstants.GEAR_RATIO;
     motorConfig.MotionMagic.MotionMagicAcceleration = Constants.PivotConstants.MM_ACCELERATION;
     motorConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.PivotConstants.MM_CRUISE_VELOCITY;

@@ -90,13 +90,13 @@ public final class Constants {
 
     public static final Slot0Configs GAINS =
         new Slot0Configs()
-            .withKP(30)
-            .withKI(0)
-            .withKD(0.3)
+            .withKP(8.5)
+            .withKI(0.1)
+            .withKD(1)
             .withKA(0)
             .withKS(0.19)
             .withKV(0)
-            .withKG(0.27)
+            .withKG(0.6343)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static final double MM_ACCELERATION = 10;
@@ -105,14 +105,14 @@ public final class Constants {
     // postiiotns
     public static final double START_ANGLE = 0; // -0.024902;
     // public static final double STOW_ANGLE = 0.1; // -0.5;
-    public static final double GROUND_INTAKE_ANGLE = 1;
+    public static final double GROUND_INTAKE_ANGLE = -0.12;
     public static final double ALGAE_INTAKE_ANGLE = 10.591797;
-    public static final double SCORING_ANGLE = 0.5;
+    public static final double SCORING_ANGLE = 0.287354;
     public static final double PROCESSOR_SCORING_ANGLE = 8;
 
     // other
     public static final double CANCODER_DISCONTINUITY = 0.5;
-    public static final double OFFSET = 8.484473;
+    public static final double OFFSET = 0.287354;
 
     public static final double SETPOINT_TOLERANCE = 0.03125;
   }
@@ -146,13 +146,13 @@ public final class Constants {
 
     public static final Slot0Configs GAINS =
         new Slot0Configs()
-            .withKP(5)
+            .withKP(6)
             .withKI(0)
-            .withKD(0.0)
+            .withKD(0.5)
             .withKA(0)
             .withKS(0)
             .withKV(0)
-            .withKG(0.36)
+            .withKG(0.46343)
             .withGravityType(GravityTypeValue.Elevator_Static);
 
     public static final double SETPOINT_TOLERANCE = 0.1;

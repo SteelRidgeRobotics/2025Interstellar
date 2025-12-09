@@ -176,7 +176,7 @@ public class RobotContainer {
                 () -> new Rotation2d()));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when LeftBumper button is pressed
     controller
@@ -223,6 +223,10 @@ public class RobotContainer {
     controller
         .a()
         .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.L1_CORAL)));
+
+    controller
+        .x()
+        .whileTrue(Commands.runOnce(() -> superstructure.setGoal(Superstructure.States.L2_CORAL)));
   }
   ;
 
